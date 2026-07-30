@@ -1,0 +1,9 @@
+﻿*.o
+*.bin
+*.iso
+*.sys
+build/
+bin/
+*.tmp
+*.log
+.DS_Store
