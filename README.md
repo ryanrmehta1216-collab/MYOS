@@ -3,6 +3,10 @@
 ![Language](https://img.shields.io/badge/C-97%25-orange)
 ![License](https://img.shields.io/badge/license-MIT-purple)
 
+
+https://github.com/user-attachments/assets/2958effb-6b66-43e0-8fc1-a79d923f4be7
+
+
 <p align="center">
   <img src="https://img.shields.io/badge/GRUB-Multiboot%20Compliant-0078D7" alt="GRUB Multiboot"/>
   <img src="https://img.shields.io/badge/Ring-0%2F3-black"/>
