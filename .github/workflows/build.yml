@@ -1,0 +1,67 @@
+# =============================================
+# MYOS CI/CD — GitHub Actions Workflow
+#
+# Automatically builds the x86 kernel on every
+# push and pull request to verify compilation.
+# =============================================
+
+name: MYOS Build
+
+on:
+  push:
+    branches: [ "main", "master", "develop" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install cross-compilation dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            gcc-multilib \
+            g++-multilib \
+            grub-pc-bin \
+            xorriso \
+            mtools \
+            libc6-dev-i386
+
+      - name: Check toolchain
+        run: |
+          gcc --version
+          ld --version
+          grub-file --version || echo "grub-file not available"
+
+      - name: Build kernel
+        run: |
+          make clean 2>/dev/null || true
+          make all
+
+      - name: Verify Multiboot compliance
+        run: |
+          if grub-file --is-x86-multiboot myos.bin; then \
+            echo "✅ myos.bin is Multiboot compliant"; \
+          else \
+            echo "❌ myos.bin is NOT Multiboot compliant!"; \
+            exit 1; \
+          fi
+
+      - name: Check binary size
+        run: |
+          ls -lh myos.bin
+          size myos.bin
+
+      - name: Upload kernel binary as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: myos-kernel
+          path: |
+            myos.bin
+            myos.iso
+          retention-days: 7
