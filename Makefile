@@ -16,11 +16,13 @@
 CC      := gcc
 LD      := ld
 AS      := gcc
-CFLAGS  := -m32 -ffreestanding -fno-builtin -fno-stack-protector -nostdlib -nostdinc -Wall -Wextra -Werror -I.
+CFLAGS  := -m32 -ffreestanding -fno-builtin -fno-stack-protector -nostdlib -nostdinc -Wall -Wextra -Werror -Iinclude
 LDFLAGS := -m elf_i386 -T linker.ld
 ASFLAGS := -m32 -ffreestanding -c
 
-# === Source files ===
+# === Source files are in src/ directory; headers in include/ ===
+VPATH := src
+
 C_SOURCES := \
 	kernel.c \
 	idt.c cpu.c serial.c timer.c keyboard.c mouse.c \
@@ -121,7 +123,7 @@ size: $(KERNEL_BIN)
 
 # === Clean ===
 clean:
-	@rm -f *.o *.bin *.iso
+	@rm -f *.o *.d *.bin *.iso
 	@rm -rf $(ISO_DIR)
 	@echo "  [OK]  Clean completed"
 

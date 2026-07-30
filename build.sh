@@ -15,7 +15,7 @@ LD="${LD:-ld}"
 AS="${AS:-as}"
 
 # Compiler flags
-CFLAGS="-m32 -ffreestanding -fno-builtin -fno-stack-protector -nostdlib -nostdinc -Wall -Wextra -Werror -I."
+CFLAGS="-m32 -ffreestanding -fno-builtin -fno-stack-protector -nostdlib -nostdinc -Wall -Wextra -Werror -Iinclude"
 LDFLAGS="-m elf_i386 -T linker.ld"
 
 # Assembly flags for GNU assembler (non-GCC path)
@@ -23,40 +23,42 @@ ASFLAGS="--32"
 
 # Source files (C)
 C_SOURCES="
-    kernel.c
-    idt.c
-    cpu.c
-    serial.c
-    timer.c
-    keyboard.c
-    mouse.c
-    paging.c
-    pmm.c
-    heap.c
-    memory.c
-    gfx.c
-    desktop.c
-    capability.c
-    syscall.c
-    initrd.c
-    vfs.c
-    user.c
-    scheduler.c
-    aegis.c
-    ata.c
-    mehtafs.c
-    pci.c
-    rtl8139.c
-    aura_net.c
-    telemetry.c
+    src/kernel.c
+    src/idt.c
+    src/cpu.c
+    src/serial.c
+    src/timer.c
+    src/keyboard.c
+    src/mouse.c
+    src/paging.c
+    src/pmm.c
+    src/heap.c
+    src/memory.c
+    src/gfx.c
+    src/desktop.c
+    src/capability.c
+    src/syscall.c
+    src/initrd.c
+    src/vfs.c
+    src/user.c
+    src/scheduler.c
+    src/aegis.c
+    src/ata.c
+    src/mehtafs.c
+    src/pci.c
+    src/rtl8139.c
+    src/aura_net.c
+    src/telemetry.c
+    src/slab.c
+    src/panic.c
 "
 
 # Assembly files (GAS syntax .s)
 S_SOURCES="
-    boot.s
-    interrupts.s
-    syscall_entry.s
-    task_switch.s
+    src/boot.s
+    src/interrupts.s
+    src/syscall_entry.s
+    src/task_switch.s
 "
 
 # Object files
@@ -69,7 +71,7 @@ echo "=========================================="
 # Compile C files
 echo "--- Compiling C sources ---"
 for src in $C_SOURCES; do
-    obj="${src%.c}.o"
+    obj="$(basename "$src" .c).o"
     echo "  CC  $src -> $obj"
     $CC $CFLAGS -c "$src" -o "$obj"
     OBJECTS="$OBJECTS $obj"
@@ -78,7 +80,7 @@ done
 # Compile assembly files with GCC (preferred)
 echo "--- Assembling sources ---"
 for src in $S_SOURCES; do
-    obj="${src%.s}.o"
+    obj="$(basename "$src" .s).o"
     echo "  AS  $src -> $obj"
     $CC $CFLAGS -c "$src" -o "$obj"
     OBJECTS="$OBJECTS $obj"
